@@ -1,11 +1,11 @@
 import './App.css';
-import Waltuh from './components/waltuh';
+import MainContainer from './components/mainContainer';
 
 
 function App() {
   return (
     <div className="App">
-      <Waltuh />
+      <MainContainer />
     </div>
   );
 }
