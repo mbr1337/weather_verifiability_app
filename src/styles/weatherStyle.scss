@@ -5,15 +5,16 @@
 }
 
 @mixin table {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex-wrap: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // flex-direction: column;
+  flex-wrap: nowrap;
 }
 
-html, body {
-    width: 100%;
+html,
+body {
+  width: 100%;
 }
 
 .mainContainer {
@@ -21,14 +22,16 @@ html, body {
 }
 
 .left {
-    @include table();
-    width: 50%;
-    float: left;
+  @include table();
+  width: 50%;
+  float: left;
 }
 
 .right {
-    @include table();
-    width: 50%;
-    float: right;
-    
+  @include table();
+  width: 50%;
+  float: right;
+}
+table {
+  margin: 0 auto;
 }

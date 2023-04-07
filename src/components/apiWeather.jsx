@@ -1,49 +1,70 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getCurrentDate } from "../utils/getDates";
-
-function ApiWeather() {
+import DownloadData from "./downloadData";
+function ApiWeather(props) {
     const weatherApiURL = `http://api.weatherapi.com/v1/forecast.json?key=2d90c55a577d4168a2b171800230604&q=Tarnow&days=7&aqi=no&alerts=no`;
-    const [feelsLike, setFeelsLike] = useState([]);
-    const [rain, setRain] = useState([]);
-    const [humidity, setHumidity] = useState([]);
-    const [snowfall, setSnowfall] = useState([]);
-    const [temperature, setTemperature] = useState([]);
-    const [time, setTime] = useState([]);
+    const [fullApiWeatherInfo, setFullApiWeatherInfo] = useState([]);
     useEffect(() => {
-        axios.get(weatherApiURL).then((response) => {
-            console.log(response.data.forecast.forecastday[0].hour);
-            // TODO: jutro
-            // const hours = response.data.forecast.forecastday[0].hour;
-            // setFeelsLike(hours.feelslike_c);
-            // setRain(hours.chance_of_rain);
-            // setHumidity(hours.humidity);
-            // setSnowfall(hours.chance_of_snow);
-            // setTemperature(hours.temp_c);
-            // setTime(hours.time);
-        })
-            .catch(error => console.error(error));
+        axios
+            .get(weatherApiURL)
+            .then((response) => {
+                const forecastdays = response.data.forecast.forecastday;
+                const fullInfo = forecastdays.reduce((acc, forecastday) => {
+                    const hourInfo = forecastday.hour.map((hour) => {
+                        const hourObj = {
+                            feelsLike: hour.feelslike_c,
+                            rain: hour.chance_of_rain,
+                            humidity: hour.humidity,
+                            temperature: hour.temp_c,
+                            time: hour.time,
+                            date: forecastday.date,
+                        };
+                        return hourObj;
+                    });
+                    return [...acc, ...hourInfo];
+                }, []);
+                setFullApiWeatherInfo(fullInfo);
+            })
+            .catch((error) => console.error(error));
     }, []);
 
-    // const fullWeatherApiInfo = feelsLike.map((item, index) => ({
-    //     item1: item,
-    //     item2: rain[index],
-    //     item3: humidity[index],
-    //     item4: snowfall[index],
-    //     item5: temperature[index],
-    //     item6: time[index],
-    // }));
+    useEffect(() => {
+        props.onArrayUpdate(fullApiWeatherInfo);
+    })
+
+    // reduce() do przechodzenia przez wszystkie indeksy forecastday[]
+    // map() do przechodzenia przez wszystkie indeksy hour[] dla każdego indeksu forecastday[].
+    // Tworzy nową tablicę fullInfo, która zawiera wszystkie godzinowe informacje o pogodzie, a następnie ustawia ją na zmienną stanu fullApiWeatherInfo.
 
     return (
         <section id="weatherApi">
             <h2>Zassane z weather Api z daty {getCurrentDate('-')} dla Tarnow</h2>
-            {/* <ol>
-                {fullWeatherApiInfo.map(({ item1, item2, item3, item4, item5, item6 }, index) => (
-                    <li key={time[index]}>
-                        Temperatura odczuwalna: {item1} - Deszcz: {item2} - Wilgotność: {item3} - Śnieg: {item4} - Temperatura: {item5} - Czas: {item6}
-                    </li>
-                ))}
-            </ol> */}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Czas</th>
+                        <th>Temperatura (°C)</th>
+                        <th>Odczuwalna (°C)</th>
+                        <th>Wilgotność (%)</th>
+                        <th>Szansa na opady (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {fullApiWeatherInfo.map((hour) => (
+                        <tr key={hour.time}>
+                            <td>{hour.date}</td>
+                            <td>{hour.time.slice(-5)}</td>
+                            <td>{hour.temperature}</td>
+                            <td>{hour.feelsLike}</td>
+                            <td>{hour.humidity}</td>
+                            <td>{hour.rain}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <DownloadData updatedArray={fullApiWeatherInfo} from={"WeatherApi"} />
         </section>
     )
 
