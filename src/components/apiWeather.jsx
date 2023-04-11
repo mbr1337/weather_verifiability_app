@@ -39,7 +39,7 @@ function ApiWeather(props) {
 
     return (
         <section id="weatherApi">
-            <h2>Zassane z weather Api z daty {getCurrentDate('-')} dla Tarnow</h2>
+            <h2>Zassane z <u>Weather Api</u> z daty {getCurrentDate('-')} dla Tarnow</h2>
             <table>
                 <thead>
                     <tr>
