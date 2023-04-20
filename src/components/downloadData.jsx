@@ -1,6 +1,6 @@
 import React from "react";
 import { getCurrentDate } from "../utils/getDates";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 
 
 

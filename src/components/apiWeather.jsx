@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getCurrentDate } from "../utils/getDates";
 import DownloadData from "./downloadData";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
 function ApiWeather(props) {
     const weatherApiURL = `http://api.weatherapi.com/v1/forecast.json?key=2d90c55a577d4168a2b171800230604&q=Tarnow&days=7&aqi=no&alerts=no`;
     const [fullApiWeatherInfo, setFullApiWeatherInfo] = useState([]);
@@ -19,6 +21,10 @@ function ApiWeather(props) {
                             temperature: hour.temp_c,
                             time: hour.time,
                             date: forecastday.date,
+                            // datetimeWithTime: `${new Date(forecastday.date).toLocaleDateString()} ${hour.time
+                            //     .slice(-5)
+                            // }`
+                            datetimeWithTime: `${new Date(forecastday.date).toLocaleDateString()} ${new Date(hour.time).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
                         };
                         return hourObj;
                     });
@@ -27,7 +33,7 @@ function ApiWeather(props) {
                 setFullApiWeatherInfo(fullInfo);
             })
             .catch((error) => console.error(error));
-    }, []);
+    }, [weatherApiURL]);
 
     useEffect(() => {
         props.onArrayUpdate(fullApiWeatherInfo);
@@ -64,6 +70,26 @@ function ApiWeather(props) {
                     ))}
                 </tbody>
             </table>
+            <BarChart
+                width={1000}
+                height={700}
+                data={fullApiWeatherInfo}
+                margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="datetimeWithTime" padding={{ left: 30, right: 30 }} />
+                <YAxis label="°C" />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="feelsLike" fill="#8884d8" />
+                <Bar dataKey="temperature" fill="#82ca9d" />
+                {/* {console.log(fullMeteoWeatherInfoArray)} */}
+            </BarChart>
             <DownloadData updatedArray={fullApiWeatherInfo} from={"WeatherApi"} />
         </section>
     )
