@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getCurrentDate } from "../utils/getDates";
 import DownloadData from "./downloadData";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import BChart from "./barChart";
 
 function ApiWeather(props) {
     const weatherApiURL = `http://api.weatherapi.com/v1/forecast.json?key=2d90c55a577d4168a2b171800230604&q=Tarnow&days=7&aqi=no&alerts=no`;
@@ -46,7 +46,7 @@ function ApiWeather(props) {
     return (
         <section id="weatherApi">
             <h2>Zassane z <u>Weather Api</u> z daty {getCurrentDate('-')} dla Tarnow</h2>
-            <table>
+            {/* <table>
                 <thead>
                     <tr>
                         <th>Data</th>
@@ -69,27 +69,17 @@ function ApiWeather(props) {
                         </tr>
                     ))}
                 </tbody>
-            </table>
-            <BarChart
+            </table> */}
+            <BChart
                 width={1000}
                 height={700}
-                data={fullApiWeatherInfo}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="datetimeWithTime" padding={{ left: 30, right: 30 }} />
-                <YAxis label="°C" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="feelsLike" fill="#8884d8" />
-                <Bar dataKey="temperature" fill="#82ca9d" />
-                {/* {console.log(fullMeteoWeatherInfoArray)} */}
-            </BarChart>
+                fullWeatherArray={fullApiWeatherInfo}
+                xDataKey="datetimeWithTime"
+                barDataKey1="feelsLike"
+                barDataKey2="temperature"
+                barDataKey3="rain"
+                barDataKey4="humidity"
+            />
             <DownloadData updatedArray={fullApiWeatherInfo} from={"WeatherApi"} />
         </section>
     )

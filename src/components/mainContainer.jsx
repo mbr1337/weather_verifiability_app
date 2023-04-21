@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MeteoWeather from "./meteoWeather";
 import ApiWeather from "./apiWeather";
 import VisualCrossing from "./visualCrossing";
+import CombinedLineChart from "./combinedLineChart";
 
 function MainContainer() {
     const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,7 @@ function MainContainer() {
         updateFunction(updatedArray);
     }
 
+    //TODO: CombinedlineChart
     return (
         <div className="mainContainer">
             {/* zmienic isloading na true */}
@@ -21,6 +23,7 @@ function MainContainer() {
                     <MeteoWeather onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedMeteoWeatherArray)} />
                     <ApiWeather onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedWeatherApiArray)} />
                     <VisualCrossing onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedVisualCrossingArray)} />
+                    <CombinedLineChart />
                 </div>
 
             )}

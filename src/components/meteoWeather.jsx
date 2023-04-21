@@ -3,8 +3,22 @@ import axios from "axios";
 import { getCurrentDate } from "../utils/getDates";
 import '../styles/weatherStyle.scss';
 import DownloadData from "./downloadData";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-
+import BChart from "./barChart";
+import {
+    ResponsiveContainer,
+    ComposedChart,
+    Line,
+    Area,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    LineChart,
+    Customized,
+    Cross
+} from "recharts";
 function MeteoWeather() {
     const meteoWeatherURL = `https://api.open-meteo.com/v1/forecast?latitude=50.01&longitude=20.99&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth&timezone=Europe%2FBerlin`;
     const [apparentTemperature_2m, setApparentTemperature_2m] = useState([]);
@@ -46,11 +60,15 @@ function MeteoWeather() {
         }));
         setFullMeteoWeatherInfoArray(fullMeteoWeatherInfo);
     }, [apparentTemperature_2m, rain, relativehumidity_2m, temperature, time]);
-
+    const style = {
+        top: 0,
+        left: 350,
+        lineHeight: "24px"
+    };
     return (
         <section id="meteoWeather">
             <h2>Zassane z <u>Meteo Weather</u> z daty {getCurrentDate('-', 0)} dla Tarnow</h2>
-            <table>
+            {/* <table>
                 <thead>
                     <tr>
                         <th>Data</th>
@@ -74,29 +92,62 @@ function MeteoWeather() {
                         </tr>
                     ))}
                 </tbody>
-            </table>
-            <DownloadData updatedArray={fullMeteoWeatherInfoArray} from={"Meteo_Weather"} />
-            <BarChart
+            </table> */}
+            <BChart
                 width={1000}
                 height={700}
-                data={fullMeteoWeatherInfoArray}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time2" padding={{ left: 30, right: 30 }} />
-                <YAxis label="°C" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="feelsLike" fill="#8884d8" />
-                <Bar dataKey="temperature" fill="#82ca9d" />
-                {/* <Bar dataKey="time2" fill="#1c1c1c" /> */}
-                {/* {console.log(fullMeteoWeatherInfoArray)} */}
-            </BarChart>
+                fullWeatherArray={fullMeteoWeatherInfoArray}
+                xDataKey="time2"
+                barDataKey1="feelsLike"
+                barDataKey2="temperature"
+                barDataKey3="rain"
+                barDataKey4="humidity"
+            />
+            <DownloadData updatedArray={fullMeteoWeatherInfoArray} from={"Meteo_Weather"} />
+            <ResponsiveContainer width="100%" height={300}>
+                <ComposedChart
+                    width={500}
+                    height={400}
+                    data={fullMeteoWeatherInfoArray}
+                    margin={{
+                        top: 20,
+                        right: 20,
+                        bottom: 20,
+                        left: 20
+                    }}
+                >
+                    <CartesianGrid stroke="#f5f5f5" />
+                    <XAxis dataKey="time2" scale="band" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Area type="monotone" dataKey="feelsLike" fill="#1c1c1c" />
+                    <Bar dataKey="temperature" barSize={20} fill="#ff7300" fillOpacity={0.5} />
+                    <Line type="monotone" dataKey="rain" stroke="#0000ff" />
+                </ComposedChart>
+            </ResponsiveContainer>
+
+            <ResponsiveContainer width="100%" height={500}>
+                <LineChart
+                    width={500}
+                    height={300}
+                    data={fullMeteoWeatherInfoArray}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time2" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="feelsLike" stroke="#8884d8" />
+                    <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
         </section>
     );
 
