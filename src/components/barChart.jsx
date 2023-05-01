@@ -25,8 +25,6 @@ function BChart(props) {
             <Legend />
             <Bar dataKey={props.barDataKey1} fill="#0000ff" fillOpacity={0.7} />
             <Bar dataKey={props.barDataKey2} fill="#82ca9d" fillOpacity={1} />
-            <Bar dataKey={props.barDataKey3} fill="#1c1c1c" fillOpacity={0.9} />
-            <Bar dataKey={props.barDataKey4} fill="#808080" fillOpacity={0.5} />
         </BarChart>
     );
 }

@@ -3,9 +3,9 @@ import { getCurrentDate } from "../utils/getDates";
 import axios from "axios";
 import DownloadData from "./downloadData";
 import BChart from "./barChart";
+import { visualCrossingURL } from "../config";
 
 function VisualCrossing() {
-    const visualCrossingURL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tarnow?unitGroup=us&include=hours&key=WUUB5CLKC97FSMXZ6YK8GF4F6&contentType=json`;
     const [fullVisualCrossingInfo, setfullVisualCrossingInfo] = useState([]);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ function VisualCrossing() {
                 setfullVisualCrossingInfo(fullInfo);
             })
             .catch((error) => console.error(error));
-    }, [visualCrossingURL]);
+    }, []);
     return (
         <section id="visualCrossingApi">
             <h2>Zassane z <u>Visual Crossing</u> z daty {getCurrentDate('-')} dla Tarnow</h2>
@@ -69,8 +69,6 @@ function VisualCrossing() {
                 xDataKey="datetimeWithTime"
                 barDataKey1="feelsLike"
                 barDataKey2="temperature"
-                barDataKey3="rain"
-                barDataKey4="humidity"
             />
             <DownloadData updatedArray={fullVisualCrossingInfo} from={"Visual_Crossing"} />
         </section>

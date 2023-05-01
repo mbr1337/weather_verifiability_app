@@ -3,9 +3,9 @@ import axios from "axios";
 import { getCurrentDate } from "../utils/getDates";
 import DownloadData from "./downloadData";
 import BChart from "./barChart";
+import { weatherApiURL } from "../config";
 
 function ApiWeather(props) {
-    const weatherApiURL = `http://api.weatherapi.com/v1/forecast.json?key=2d90c55a577d4168a2b171800230604&q=Tarnow&days=7&aqi=no&alerts=no`;
     const [fullApiWeatherInfo, setFullApiWeatherInfo] = useState([]);
     useEffect(() => {
         axios
@@ -33,7 +33,7 @@ function ApiWeather(props) {
                 setFullApiWeatherInfo(fullInfo);
             })
             .catch((error) => console.error(error));
-    }, [weatherApiURL]);
+    }, []);
 
     useEffect(() => {
         props.onArrayUpdate(fullApiWeatherInfo);
@@ -77,8 +77,6 @@ function ApiWeather(props) {
                 xDataKey="datetimeWithTime"
                 barDataKey1="feelsLike"
                 barDataKey2="temperature"
-                barDataKey3="rain"
-                barDataKey4="humidity"
             />
             <DownloadData updatedArray={fullApiWeatherInfo} from={"WeatherApi"} />
         </section>

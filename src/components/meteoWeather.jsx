@@ -19,8 +19,8 @@ import {
     Customized,
     Cross
 } from "recharts";
+import { meteoWeatherURL } from "../config";
 function MeteoWeather() {
-    const meteoWeatherURL = `https://api.open-meteo.com/v1/forecast?latitude=50.01&longitude=20.99&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth&timezone=Europe%2FBerlin`;
     const [apparentTemperature_2m, setApparentTemperature_2m] = useState([]);
     const [rain, setRain] = useState([]);
     const [relativehumidity_2m, setRelativeHumidity_2m] = useState([]);
@@ -40,7 +40,7 @@ function MeteoWeather() {
                 setTime(hourly.time);
             })
             .catch((error) => console.error(error));
-    }, [meteoWeatherURL]);
+    }, []);
 
     useEffect(() => {
         const fullMeteoWeatherInfo = apparentTemperature_2m.map((item, index) => ({
@@ -100,8 +100,6 @@ function MeteoWeather() {
                 xDataKey="time2"
                 barDataKey1="feelsLike"
                 barDataKey2="temperature"
-                barDataKey3="rain"
-                barDataKey4="humidity"
             />
             <DownloadData updatedArray={fullMeteoWeatherInfoArray} from={"Meteo_Weather"} />
             <ResponsiveContainer width="100%" height={300}>
