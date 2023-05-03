@@ -19,17 +19,16 @@ import Papa from "papaparse"
 import testcsv from "./prognoza_pogody_z_dnia_2023-04-18_z_Meteo_Weather.csv";
 import { format } from "date-fns";
 
-function CombinedLineChart(props) {
+function CombinedLineChart() {
 
     // const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-05-01&hourly=temperature_2m,apparent_temperature`;
-    const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-04-26&hourly=temperature_2m,apparent_temperature`;
+    const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-04-24&hourly=temperature_2m,apparent_temperature`;
     const [apparentTemperature_2m, setApparentTemperature_2m] = useState([]);
     const [temperature, setTemperature] = useState([]);
     const [time, setTime] = useState([]);
     const [fullHistoricalWeatherInfoArray, setfullHistoricalWeatherInfoArray] = useState([]);
     const [weatherForecasts, setWeatherForecasts] = useState([]);
     const [weatherData, setWeatherData] = useState([]);
-    const [combinedWeatherDataInfo, setCombinedWeatherDataInfo] = useState([]);
 
     useEffect(() => {
         axios
@@ -50,7 +49,6 @@ function CombinedLineChart(props) {
             download: true,
             complete: function (results) {
                 // setWeatherForecasts(results.data)
-                console.log("results: ",results);
                 const parsedData = results.data.map((item) => ({
                     ...item,
                     CsvFeelsLike: parseFloat(item.feelsLike),
@@ -71,58 +69,65 @@ function CombinedLineChart(props) {
                 time2: formattedDate,
             };
         });
-        // const fullHistoricalWeatherInfo = apparentTemperature_2m.map((item, index) => {
-        //     const date = new Date(time[index]);
-        //     const formattedDate = date.toLocaleString("en-US", {
-        //         year: "numeric",
-        //         month: "2-digit",
-        //         day: "2-digit",
-        //     }).replace(/\//g, "-").split("-").reverse().join("-");
-
-        //     return {
-        //         feelsLike: item,
-        //         temperature: temperature[index],
-        //         time2: formattedDate,
-        //     };
-        // });
         setfullHistoricalWeatherInfoArray(fullHistoricalWeatherInfo);
     }, [apparentTemperature_2m, temperature, time]);
 
 
     useEffect(() => {
-        // console.log('Historical weather: ', fullHistoricalWeatherInfoArray[0]);
-        // console.log('CSVweatherForecasts: ', weatherForecasts[0]);
         const temp = fullHistoricalWeatherInfoArray.filter(item => item.historicalTemperature !== null);
-        setWeatherData([...temp, ...weatherForecasts]);
-
+        for (let i = 0; i < weatherForecasts.length; i++) {
+            temp[i].CsvFeelsLike = weatherForecasts[i].CsvFeelsLike;
+            temp[i].CsvTemperature = weatherForecasts[i].CsvTemperature;
+        }
+        setWeatherData([...temp]);
     }, [weatherForecasts, apparentTemperature_2m, temperature, time, fullHistoricalWeatherInfoArray])
 
-    console.log("Weather data", weatherData);
-    // console.log("Full API", fullHistoricalWeatherInfoArray);
     return (
-        <ResponsiveContainer width="100%" height={500}>
-            <LineChart
-                width={500}
-                height={300}
-                data={weatherData}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time2" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="historicalFeelsLike" stroke="#8884d8" />
-                <Line type="monotone" dataKey="historicalTemperature" stroke="#82ca9d" />
-                <Line type="monotone" dataKey="CsvFeelsLike" stroke="#8884d8" />
-                <Line type="monotone" dataKey="CsvTemperature" stroke="#82ca9d" />
-            </LineChart>
-        </ResponsiveContainer>
+        <div style={{ width: '100%' }}>
+            <ResponsiveContainer width="100%" height={500}>
+                <LineChart
+                    width={500}
+                    height={300}
+                    data={weatherData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time2" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="historicalTemperature" stroke="#8884d8" />
+                    <Line type="monotone" dataKey="CsvTemperature" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={500}>
+                <LineChart
+                    width={500}
+                    height={300}
+                    data={weatherData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time2" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="historicalFeelsLike" stroke="#8884d8" />
+                    <Line type="monotone" dataKey="CsvFeelsLike" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+
     );
 }
 
