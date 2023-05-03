@@ -14,7 +14,6 @@ function MainContainer() {
         updateFunction(updatedArray);
     }
 
-    //TODO: CombinedlineChart
     return (
         <div className="mainContainer">
             {/* zmienic isloading na true */}

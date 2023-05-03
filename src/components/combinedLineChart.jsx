@@ -21,7 +21,8 @@ import { format } from "date-fns";
 
 function CombinedLineChart(props) {
 
-    const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-05-01&hourly=temperature_2m,apparent_temperature`;
+    // const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-05-01&hourly=temperature_2m,apparent_temperature`;
+    const historicalDataAPI = `https://archive-api.open-meteo.com/v1/archive?latitude=50.01&longitude=20.99&start_date=2023-04-18&end_date=2023-04-26&hourly=temperature_2m,apparent_temperature`;
     const [apparentTemperature_2m, setApparentTemperature_2m] = useState([]);
     const [temperature, setTemperature] = useState([]);
     const [time, setTime] = useState([]);
@@ -48,7 +49,14 @@ function CombinedLineChart(props) {
             header: true,
             download: true,
             complete: function (results) {
-                setWeatherForecasts(results.data)
+                // setWeatherForecasts(results.data)
+                console.log("results: ",results);
+                const parsedData = results.data.map((item) => ({
+                    ...item,
+                    CsvFeelsLike: parseFloat(item.feelsLike),
+                    CsvTemperature: parseFloat(item.temperature),
+                }));
+                setWeatherForecasts(parsedData);
             }
         });
     }, []);
@@ -58,8 +66,8 @@ function CombinedLineChart(props) {
             const date = new Date(time[index]);
             const formattedDate = format(date, "yyyy-MM-dd");
             return {
-                feelsLike: item,
-                temperature: temperature[index],
+                historicalFeelsLike: item,
+                historicalTemperature: temperature[index],
                 time2: formattedDate,
             };
         });
@@ -82,10 +90,15 @@ function CombinedLineChart(props) {
 
 
     useEffect(() => {
-        setWeatherData([...fullHistoricalWeatherInfoArray, ...weatherForecasts]);
+        // console.log('Historical weather: ', fullHistoricalWeatherInfoArray[0]);
+        // console.log('CSVweatherForecasts: ', weatherForecasts[0]);
+        const temp = fullHistoricalWeatherInfoArray.filter(item => item.historicalTemperature !== null);
+        setWeatherData([...temp, ...weatherForecasts]);
+
     }, [weatherForecasts, apparentTemperature_2m, temperature, time, fullHistoricalWeatherInfoArray])
 
-
+    console.log("Weather data", weatherData);
+    // console.log("Full API", fullHistoricalWeatherInfoArray);
     return (
         <ResponsiveContainer width="100%" height={500}>
             <LineChart
@@ -104,8 +117,10 @@ function CombinedLineChart(props) {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                {/* <Line type="monotone" dataKey="feelsLike" stroke="#8884d8" /> */}
-                <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="historicalFeelsLike" stroke="#8884d8" />
+                <Line type="monotone" dataKey="historicalTemperature" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="CsvFeelsLike" stroke="#8884d8" />
+                <Line type="monotone" dataKey="CsvTemperature" stroke="#82ca9d" />
             </LineChart>
         </ResponsiveContainer>
     );
