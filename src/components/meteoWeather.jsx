@@ -67,7 +67,7 @@ function MeteoWeather() {
     };
     return (
         <section id="meteoWeather">
-            <h2>Zassane z <u>Meteo Weather</u> z daty {getCurrentDate('-', 0)} dla Tarnow</h2>
+            <h2>Pobrane z <u>Meteo Weather</u> z daty {getCurrentDate('-', 0)} dla Tarnow</h2>
             {/* <table>
                 <thead>
                     <tr>

@@ -37,7 +37,7 @@ function VisualCrossing() {
     }, []);
     return (
         <section id="visualCrossingApi">
-            <h2>Zassane z <u>Visual Crossing</u> z daty {getCurrentDate('-')} dla Tarnow</h2>
+            <h2>Pobrane z <u>Visual Crossing</u> z daty {getCurrentDate('-')} dla Tarnow</h2>
             {/* <table>
                 <thead>
                     <tr>

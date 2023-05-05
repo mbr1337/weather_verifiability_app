@@ -61,12 +61,14 @@ function CombinedLineChart() {
 
     useEffect(() => {
         const fullHistoricalWeatherInfo = apparentTemperature_2m.map((item, index) => {
-            const date = new Date(time[index]);
-            const formattedDate = format(date, "yyyy-MM-dd");
+            // const date = new Date(time[index]);
+            // const formattedDate = format(date, "yyyy-MM-dd");
             return {
                 historicalFeelsLike: item,
                 historicalTemperature: temperature[index],
-                time2: formattedDate,
+                // time2: formattedDate,
+                time2: new Date(time[index]).toLocaleString(),
+                date: (time[index].substr(-5))
             };
         });
         setfullHistoricalWeatherInfoArray(fullHistoricalWeatherInfo);
