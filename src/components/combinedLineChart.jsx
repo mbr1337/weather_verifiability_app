@@ -26,7 +26,7 @@ function CombinedLineChart() {
     const [apparentTemperature_2m, setApparentTemperature_2m] = useState([]);
     const [temperature, setTemperature] = useState([]);
     const [time, setTime] = useState([]);
-    const [fullHistoricalWeatherInfoArray, setfullHistoricalWeatherInfoArray] = useState([]);
+    const [fullHistoricalWeatherInfoArray, setFullHistoricalWeatherInfoArray] = useState([]);
     const [weatherForecasts, setWeatherForecasts] = useState([]);
     const [weatherData, setWeatherData] = useState([]);
 
@@ -54,6 +54,7 @@ function CombinedLineChart() {
                     CsvFeelsLike: parseFloat(item.feelsLike),
                     CsvTemperature: parseFloat(item.temperature),
                 }));
+                //console.log(parsedData);
                 setWeatherForecasts(parsedData);
             }
         });
@@ -71,7 +72,7 @@ function CombinedLineChart() {
                 date: (time[index].substr(-5))
             };
         });
-        setfullHistoricalWeatherInfoArray(fullHistoricalWeatherInfo);
+        setFullHistoricalWeatherInfoArray(fullHistoricalWeatherInfo);
     }, [apparentTemperature_2m, temperature, time]);
 
 
@@ -82,7 +83,11 @@ function CombinedLineChart() {
             temp[i].CsvTemperature = weatherForecasts[i].CsvTemperature;
         }
         setWeatherData([...temp]);
+
     }, [weatherForecasts, apparentTemperature_2m, temperature, time, fullHistoricalWeatherInfoArray])
+
+    console.log("sadfasdfasdfad");
+    console.log(weatherData);
 
     return (
         <div style={{ width: '100%' }}>
