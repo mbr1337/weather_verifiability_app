@@ -1,35 +1,91 @@
-import React, { useEffect, useState } from "react";
-import MeteoWeather from "./meteoWeather";
-import ApiWeather from "./apiWeather";
-import VisualCrossing from "./visualCrossing";
-import CombinedLineChart from "./combinedLineChart";
+import React, {useEffect, useState} from "react";
+import {getForecastDataFromApi, getHistoricalWeatherDataFromApi, joinJsons} from "../utils/weatherDataService";
+import MeanAbsErrorTable from "./MeanAbsErrorTable";
 import ComparisonLineChart from "./ComparisonLineChart";
+import {PercentWithinTemperatureRange} from "./PercentWithinTemperatureRange";
 
 function MainContainer() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [updatedMeteoWeatherArray, setUpdatedMeteoWeatherArray] = useState([]);
-    const [updatedWeatherApiArray, setUpdatedWeatherApiArray] = useState([]);
-    const [updatedVisualCrossingArray, setUpdatedVisualCrossingArray] = useState([]);
 
-    function handleArrayUpdate(updatedArray, updateFunction) {
-        updateFunction(updatedArray);
+    const [startDate, setStartDate] = useState('2023-06-03');
+    const [lengthOfComparisonInDays, setLengthOfComparisonInDays] = useState(10);
+
+    const [weatherForecastsComparisonData, setWeatherForecastsComparisonData] = useState(new Map());
+
+    const weatherDataCollectionNames = [
+        'visualcrossings',
+        'meteoweathers',
+        'tomorrowapis'
+    ];
+
+    useEffect(() => {
+        handleLoadingData();
+    }, [startDate, lengthOfComparisonInDays]);
+
+    async function handleLoadingData() {
+        const rawHistoricalWeatherData = await getHistoricalWeatherDataFromApi(startDate, lengthOfComparisonInDays);
+
+        const dataFromForecastCollections = await Promise.all(
+            weatherDataCollectionNames.map(async (name) => {
+                const data = await getForecastDataFromApi(startDate, lengthOfComparisonInDays, name);
+                return data.data.data; //naming, yes
+            })
+        );
+
+        const joinedWeatherAndHistoricalData = new Map();
+        weatherDataCollectionNames.map((name, index) => {
+            const data = joinJsons(
+                rawHistoricalWeatherData.data.hourly,
+                dataFromForecastCollections[index]
+            );
+            joinedWeatherAndHistoricalData.set(name, data);
+        })
+
+        setWeatherForecastsComparisonData(joinedWeatherAndHistoricalData);
     }
 
     return (
         <div className="mainContainer">
-            {/* zmienic isloading na true */}
-            {isLoading ? <p>Loading...</p> : (
+
+            {
+                weatherForecastsComparisonData.size !== 0 &&
                 <div id="weathers">
-                    {/*<MeteoWeather onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedMeteoWeatherArray)} />*/}
-                    {/*<ApiWeather onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedWeatherApiArray)} />*/}
-                    {/*<VisualCrossing onArrayUpdate={(updatedArray) => handleArrayUpdate(updatedArray, setUpdatedVisualCrossingArray)} />*/}
-                    {/*<CombinedLineChart />*/}
-                    <ComparisonLineChart startDate={'2023-05-20'} lengthInDays={10} collection={'visualcrossings'} />
-                    {/*<ComparisonLineChart date={'2023-05-22'} collection={'meteoweathers'}/>*/}
-                    {/*<ComparisonLineChart date={'2023-05-22'} collection={'tomorrowapis'}/>*/}
+                    <MeanAbsErrorTable
+                        weatherData={weatherForecastsComparisonData}
+                        whatParameterToCompare={'temperature'}
+                        header={'Mean absolute error - temperature'}
+                    />
+                    <MeanAbsErrorTable
+                        weatherData={weatherForecastsComparisonData}
+                        whatParameterToCompare={'rain'}
+                        header={'Mean absolute error - precipitation'}
+                    />
+
+                    <PercentWithinTemperatureRange
+                        weatherData={weatherForecastsComparisonData}
+                        header={'% within n°C'}
+                    />
+
+                    <ComparisonLineChart
+                        startDate={startDate}
+                        lengthInDays={lengthOfComparisonInDays}
+                        collection={'visualcrossings'}
+                        weatherData={weatherForecastsComparisonData.get('visualcrossings')}
+                    />
+                    <ComparisonLineChart
+                        startDate={startDate}
+                        lengthInDays={lengthOfComparisonInDays}
+                        collection={'meteoweathers'}
+                        weatherData={weatherForecastsComparisonData.get('meteoweathers')}
+                    />
+                    <ComparisonLineChart
+                        startDate={startDate}
+                        lengthInDays={lengthOfComparisonInDays}
+                        collection={'tomorrowapis'}
+                        weatherData={weatherForecastsComparisonData.get('tomorrowapis')}
+                    />
                 </div>
 
-            )}
+            }
         </div>
     );
 }
