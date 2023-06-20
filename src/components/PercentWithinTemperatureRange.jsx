@@ -1,8 +1,8 @@
-import {getFirstNDaysFromGivenWeatherData} from "../utils/getDates";
-import {percentWithinNCelsiusDegree} from "../utils/statistics";
+import { getFirstNDaysFromGivenWeatherData } from "../utils/getDates";
+import { percentWithinNCelsiusDegree } from "../utils/statistics";
 
 
-export function PercentWithinTemperatureRange({weatherData, whatParameterToCompare, header}) {
+export function PercentWithinTemperatureRange({ weatherData, whatParameterToCompare, header }) {
     const percentageRangeStart = 1;
     const percentageRangeEnd = 5;
 
@@ -60,20 +60,20 @@ export function PercentWithinTemperatureRange({weatherData, whatParameterToCompa
     return (
         <table style={styles.table}>
             <tbody>
-            <tr>
-                <td style={styles.caption} colSpan={percentageRangeEnd - percentageRangeStart + 1}>
-                    {header}
-                </td>
-            </tr>
+                <tr>
+                    <td style={styles.caption} colSpan={percentageRangeEnd - percentageRangeStart + 1}>
+                        {header}
+                    </td>
+                </tr>
 
-            <tr>
-                <td style={styles.cell}>
-                    Forecast provider:
-                </td>
-                {tdsWithDayLabel}
-            </tr>
+                <tr>
+                    <td style={styles.cell}>
+                        Forecast provider:
+                    </td>
+                    {tdsWithDayLabel}
+                </tr>
 
-            {tableRows()}
+                {tableRows()}
             </tbody>
         </table>
     )

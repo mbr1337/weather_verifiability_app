@@ -1,4 +1,4 @@
-import {addDays, addHours, differenceInDays, format, parseISO} from "date-fns";
+import { addDays, addHours, differenceInDays, format, parseISO } from "date-fns";
 
 export function getCurrentDate(separator = '') {
 
@@ -30,11 +30,14 @@ export function getFormattedDateWithAddedTime(startDateString, numDays, numHours
 }
 
 export function getFirstNDaysFromGivenWeatherData(weatherData, n) {
-    const firstDay = parseISO(weatherData[0].time);
-    const result = weatherData.filter(data => {
-        const difference = differenceInDays(firstDay, parseISO(data.time));
-        //console.log(difference);
+    if (!Array.isArray(weatherData) || weatherData.length === 0) {
+        return [];
+    }
+
+    const firstDay = parseISO(weatherData[0]?.time); // Added null check using optional chaining operator
+    const result = weatherData.filter((data) => {
+        const difference = differenceInDays(firstDay, parseISO(data?.time)); // Added null check using optional chaining operator
         return Math.abs(difference) <= n - 1;
-    })
+    });
     return result;
 }

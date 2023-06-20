@@ -1,9 +1,8 @@
-import {getFirstNDaysFromGivenWeatherData} from "../utils/getDates";
-import {meanAbsoluteErrorOfWeatherData} from "../utils/statistics";
+import { getFirstNDaysFromGivenWeatherData } from "../utils/getDates";
+import { meanAbsoluteErrorOfWeatherData } from "../utils/statistics";
 
-export default function MeanAbsErrorTable({weatherData, whatParameterToCompare, header}) {
+export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare, header }) {
     const numDisplayDays = 5;
-    console.log(whatParameterToCompare);
     function tableRow(weatherDataFromSingleApi) {
 
         let tdsWithResults = [];
@@ -57,7 +56,7 @@ export default function MeanAbsErrorTable({weatherData, whatParameterToCompare, 
         <table style={styles.table}>
             <tbody>
                 <tr>
-                    <td style={styles.caption} colSpan={numDisplayDays+1}>
+                    <td style={styles.caption} colSpan={numDisplayDays + 1}>
                         {header}
                     </td>
                 </tr>

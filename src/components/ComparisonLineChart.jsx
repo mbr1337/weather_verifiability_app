@@ -1,13 +1,13 @@
 import React from "react";
-import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export default function ComparisonLineChart({weatherData}) {
+export default function ComparisonLineChart({ weatherData, whatParameterToCompare }) {
 
-    const [valueToCompare, setValueToCompare] = React.useState('Temperature');
+    const [valueToCompare, setValueToCompare] = React.useState(whatParameterToCompare);
 
     return (
 
-        <div style={{width: '100%'}}>
+        <div style={{ width: '100%' }}>
             {
                 weatherData &&
                 <ResponsiveContainer width="100%" height={500}>
@@ -20,11 +20,11 @@ export default function ComparisonLineChart({weatherData}) {
                             bottom: 5
                         }}
                     >
-                        <CartesianGrid strokeDasharray="3 3"/>
-                        <XAxis dataKey="time"/>
-                        <YAxis dataKey={'historical' + valueToCompare}/>
-                        <Tooltip/>
-                        <Legend/>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis dataKey={'historical' + valueToCompare} />
+                        <Tooltip />
+                        <Legend />
                         <Line
                             type="monotone"
                             dataKey={'historical' + valueToCompare}
