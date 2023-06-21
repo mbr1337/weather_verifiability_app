@@ -1,7 +1,6 @@
 import { getFirstNDaysFromGivenWeatherData } from "../utils/getDates";
 import { percentWithinNCelsiusDegree } from "../utils/statistics";
 
-
 export function PercentWithinTemperatureRange({ weatherData, whatParameterToCompare, header }) {
     const percentageRangeStart = 1;
     const percentageRangeEnd = 5;
@@ -9,91 +8,61 @@ export function PercentWithinTemperatureRange({ weatherData, whatParameterToComp
     const numOfDaysToCompare = 8;
 
     function tableRow(weatherDataFromSingleApi) {
-
         const dataForAllTds = getFirstNDaysFromGivenWeatherData(weatherDataFromSingleApi, numOfDaysToCompare);
         let tdsWithResults = [];
 
         for (let i = percentageRangeStart; i <= percentageRangeEnd; i++) {
-
             const result = percentWithinNCelsiusDegree(dataForAllTds, i);
 
             tdsWithResults.push(
-                <td key={i} style={styles.cell}>
-                    {
-                        result.toFixed(2) + '%'
-                    }
+                <td key={i}>
+                    {result.toFixed(2)}%
                 </td>
             );
         }
 
         return (
             <tr key={Math.random()}>
-                <td style={styles.cell}>
-                    {weatherDataFromSingleApi[0].forecastSource}
-                </td>
+                <td>{weatherDataFromSingleApi[0].forecastSource}</td>
                 {tdsWithResults}
             </tr>
-        )
+        );
     }
 
     function tableRows() {
-        const elements = Array.from(weatherData).map(([key, value]) => {
+        return Array.from(weatherData).map(([key, value]) => {
             return tableRow(value);
         });
-
-        return elements;
     }
 
     let tdsWithDayLabel = [];
 
     for (let i = percentageRangeStart; i <= percentageRangeEnd; i++) {
         tdsWithDayLabel.push(
-            <td key={i} style={styles.cell}>
-                {
-                    '% within ' + i + '°C'
-                }
-            </td>
+            <th key={i}>
+                % w ciągu {i}°C
+            </th>
         );
     }
 
-
     return (
-        <table style={styles.table}>
-            <tbody>
-                <tr>
-                    <td style={styles.caption} colSpan={percentageRangeEnd - percentageRangeStart + 1}>
-                        {header}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style={styles.cell}>
-                        Forecast provider:
-                    </td>
-                    {tdsWithDayLabel}
-                </tr>
-
-                {tableRows()}
-            </tbody>
-        </table>
-    )
-
+        <div>
+            <table className="table">
+                <thead className="thead-dark">
+                    <tr>
+                        <th colSpan={percentageRangeEnd - percentageRangeStart + 2}>
+                            {header}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Dostawca prognozy:</th>
+                        {tdsWithDayLabel}
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableRows()}
+                </tbody>
+            </table>
+        </div>
+    );
 }
-
-
-const styles = {
-    table: {
-        borderCollapse: 'collapse',
-        margin: '45px'
-    },
-    cell: {
-        border: '1px solid black',
-        padding: '8px',
-    },
-    caption: {
-        paddingBottom: '10px',
-        fontWeight: 'bold',
-        fontSize: '1.2em'
-    }
-};
-

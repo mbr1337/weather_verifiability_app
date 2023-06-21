@@ -1,5 +1,6 @@
 import { getFirstNDaysFromGivenWeatherData } from "../utils/getDates";
 import { meanAbsoluteErrorOfWeatherData } from "../utils/statistics";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare, header }) {
     const numDisplayDays = 5;
@@ -11,7 +12,7 @@ export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare,
             const meanAbsErrorForEachId = meanAbsoluteErrorOfWeatherData(dataForEachTd, whatParameterToCompare);
 
             tdsWithResults.push(
-                <td key={i} style={styles.cell}>
+                <td key={i}>
                     {
                         meanAbsErrorForEachId.toFixed(2)
 
@@ -23,7 +24,7 @@ export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare,
         return (
             <tr key={Math.random()}>
 
-                <td style={styles.cell}>
+                <td>
                     {weatherDataFromSingleApi[0].forecastSource}
                 </td>
                 {tdsWithResults}
@@ -43,9 +44,9 @@ export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare,
 
     for (let i = 1; i <= numDisplayDays; i++) {
         tdsWithDayLabel.push(
-            <td key={i} style={styles.cell}>
+            <td key={i}>
                 {
-                    i + ' Days'
+                    i + ' Dni'
                 }
             </td>
         );
@@ -53,41 +54,25 @@ export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare,
 
 
     return (
-        <table style={styles.table}>
-            <tbody>
-                <tr>
-                    <td style={styles.caption} colSpan={numDisplayDays + 1}>
-                        {header}
-                    </td>
-                </tr>
+        <div>
+            <table className="table table-hover">
+                <thead className="thead-dark">
+                    <tr>
+                        <th colSpan={numDisplayDays + 1}>
+                            {header}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="col">Dostawca prognozy:</th>
+                        {tdsWithDayLabel}
+                    </tr>
+                    {tableRows()}
+                </tbody>
+            </table>
+        </div>
+    );
 
-                <tr>
-                    <td style={styles.cell}>
-                        Forecast provider:
-                    </td>
-                    {tdsWithDayLabel}
-                </tr>
-
-                {tableRows()}
-            </tbody>
-        </table>
-    )
 
 }
-
-
-const styles = {
-    table: {
-        borderCollapse: 'collapse',
-        margin: '45px'
-    },
-    cell: {
-        border: '1px solid black',
-        padding: '8px',
-    },
-    caption: {
-        paddingBottom: '10px',
-        fontWeight: 'bold',
-        fontSize: '1.2em'
-    }
-};

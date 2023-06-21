@@ -7,7 +7,7 @@ import {
 import MeanAbsErrorTable from "./MeanAbsErrorTable";
 import ComparisonLineChart from "./ComparisonLineChart";
 import { PercentWithinTemperatureRange } from "./PercentWithinTemperatureRange";
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/mainContainerStyle.scss';
 
 function MainContainer() {
@@ -19,15 +19,15 @@ function MainContainer() {
     const weatherDataCollectionNames = [
         {
             name: "visualcrossings",
-            label: "Visual Crossings",
+            label: "Visual Crossing",
         },
         {
             name: "meteoweathers",
-            label: "Meteo Weathers",
+            label: "Meteo Weather",
         },
         {
             name: "tomorrowapis",
-            label: "Tomorrow APIs",
+            label: "Tomorrow API",
         },
     ];
 
@@ -89,33 +89,35 @@ function MainContainer() {
 
     return (
         <div className="mainContainer">
-            <div className="form-group">
-                <label htmlFor="startDate">Select Start Date:</label>
+            <div
+            // className="form-group"
+            >
+                <label htmlFor="startDate">Wybierz datę rozpoczęcia:</label>
                 <input
                     type="date"
                     id="startDate"
                     value={startDate || ""}
                     onChange={handleDateChange}
-                    className="form-control"
+                // className="form-control"
                 />
                 <button
                     onClick={handleDataButtonClick}
-                    className="btn btn-primary mt-2"
+                // className="btn btn-primary mt-2"
                 >
-                    Load Data
+                    Załaduj dane
                 </button>
             </div>
 
             <select
                 onChange={handleLengthChange}
                 disabled={!startDate}
-                className="form-select mt-3"
+            // className="form-select mt-3"
             >
-                <option value={1}>1 day</option>
-                <option value={2}>2 days</option>
-                <option value={3}>3 days</option>
-                <option value={4}>4 days</option>
-                <option value={5}>5 days</option>
+                <option value={1}>1 dzień</option>
+                <option value={2}>2 dni</option>
+                <option value={3}>3 dni</option>
+                <option value={4}>4 dni</option>
+                <option value={5}>5 dni</option>
             </select>
 
             {startDate && weatherForecastsComparisonData.size !== 0 && (
@@ -124,31 +126,40 @@ function MainContainer() {
                         <MeanAbsErrorTable
                             weatherData={weatherForecastsComparisonData}
                             whatParameterToCompare={"temperature"}
-                            header={"Mean absolute error - temperature"}
+                            header={"Średni błąd bezwzględny - temperatura"}
                         />
                     </div>
                     <div className="flex-item">
                         <MeanAbsErrorTable
                             weatherData={weatherForecastsComparisonData}
                             whatParameterToCompare={"rain"}
-                            header={"Mean absolute error - precipitation"}
+                            header={"Średni błąd bezwzględny - opady"}
                         />
                     </div>
                     <div className="flex-item">
                         <PercentWithinTemperatureRange
                             weatherData={weatherForecastsComparisonData}
-                            header={"% within n°C"}
+                            header={"% w ciągu n°C"}
                         />
                     </div>
                     {weatherDataCollectionNames.map((item) => {
                         const { name, label } = item;
                         return (
                             <div key={name}>
-                                <h4 className="data-source-label">Data Source: {label}</h4>
+                                <h4 className="data-source-label">Źródło: {label}</h4>
                                 <ComparisonLineChart
                                     whatParameterToCompare={"Temperature"}
                                     weatherData={weatherForecastsComparisonData.get(name)}
                                 />
+                                <ComparisonLineChart
+                                    whatParameterToCompare={"ApparentTemperature"}
+                                    weatherData={weatherForecastsComparisonData.get(name)}
+                                />
+                                <ComparisonLineChart
+                                    whatParameterToCompare={"Rain"}
+                                    weatherData={weatherForecastsComparisonData.get(name)}
+                                />
+
                             </div>
                         );
                     })}
