@@ -78,6 +78,7 @@ function MainContainer() {
 
     const handleDateChange = (event) => {
         const selectedDate = event.target.value;
+        console.log(selectedDate);
         setStartDate(selectedDate);
     };
 

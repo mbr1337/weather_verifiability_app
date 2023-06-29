@@ -15,7 +15,6 @@ export default function MeanAbsErrorTable({ weatherData, whatParameterToCompare,
                 <td key={i}>
                     {
                         meanAbsErrorForEachId.toFixed(2)
-
                     }
                 </td>
             );
